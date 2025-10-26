@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibitions - Art Gallery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand"> Art Gallery</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <span th:if="${loggedInUser != null}">
+                    <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+                    <span style="color: #ecf0f1;">|</span>
+                    <span style="color: #f39c12;" th:text="${loggedInUser}">User</span>
+                    <a href="/logout">Logout</a>
+                </span>
+            <span th:if="${loggedInUser == null}">
+                    <a href="/login">Login</a>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">Our Exhibitions</h1>
+
+    <a href="/" class="back-link">← Back to Home</a>
+
+    <!-- Exhibitions Grid -->
+    <div class="grid">
+        <div class="card" th:each="exhibition : ${exhibitions}">
+            <h3 th:text="${exhibition.exhibitionTitle}">Exhibition Title</h3>
+            <p><strong>Dates:</strong>
+                <span th:text="${#temporals.format(exhibition.startDate, 'MMM dd, yyyy')}"></span> -
+                <span th:text="${#temporals.format(exhibition.endDate, 'MMM dd, yyyy')}"></span>
+            </p>
+            <p><strong>Artworks:</strong> <span th:text="${exhibition.totalArtworks}">0</span></p>
+            <p><strong>Artists:</strong> <span th:text="${exhibition.participatingArtists}">0</span></p>
+            <a th:href="@{/exhibition/{id}(id=${exhibition.exhibitionId})}" class="btn">View Details</a>
+        </div>
+    </div>
+
+    <div th:if="${exhibitions.isEmpty()}" class="info-box">
+        <p>No exhibitions available at the moment. Check back soon!</p>
+    </div>
+</div>
+</body>
+</html>

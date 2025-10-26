@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - Art Gallery</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand"> Art Gallery</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+            <span style="color: #ecf0f1;">|</span>
+            <span style="color: #f39c12;" th:text="${loggedInUser}">User</span>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">🛒 My Shopping Cart</h1>
+
+    <a href="/exhibitions" class="back-link">← Continue Shopping</a>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div th:if="${!cartItems.isEmpty()}">
+        <div class="cart-item" th:each="item : ${cartItems}">
+            <div>
+                <h3 th:text="${item.artworkTitle}">Artwork Title</h3>
+                <p><strong>Artist:</strong> <span th:text="${item.artistName}">Artist</span></p>
+                <p><strong>Type:</strong> <span th:text="${item.artType}">Type</span></p>
+                <p th:text="${item.description}">Description</p>
+            </div>
+            <div style="text-align: right;">
+                <p class="price" th:text="'$' + ${item.price}">Price</p>
+                <form th:action="@{/cart/remove/{id}(id=${item.artworkId})}" method="post" style="margin-top: 1rem;">
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="cart-total">
+            <p><strong>Total Items:</strong> <span th:text="${cartItems.size()}">0</span></p>
+            <p style="font-size: 2rem; margin-top: 1rem;"><strong>Total: $<span th:text="${totalPrice}">0</span></strong></p>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <form action="/cart/clear" method="post">
+                    <button type="submit" class="btn btn-danger">Clear Cart</button>
+                </form>
+                <button class="btn btn-success" style="font-size: 1.2rem;">Proceed to Checkout (Demo)</button>
+            </div>
+        </div>
+
+        <div class="info-box" style="margin-top: 2rem;">
+            <p><strong>Note:</strong> This is a demonstration shopping cart. No actual purchases will be made. This project showcases the database integration and cart functionality.</p>
+        </div>
+    </div>
+
+    <div th:if="${cartItems.isEmpty()}" class="detail-container" style="text-align: center; padding: 3rem;">
+        <h2>Your cart is empty</h2>
+        <p style="margin: 2rem 0;">Browse our exhibitions and add some amazing artworks to your cart!</p>
+        <a href="/exhibitions" class="btn btn-success">Browse Exhibitions</a>
+    </div>
+</div>
+</body>
+</html>

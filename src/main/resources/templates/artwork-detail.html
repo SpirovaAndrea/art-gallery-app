@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${artwork.artworkTitle} + ' - Art Gallery'">Artwork Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand">ART GALLERY</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <span th:if="${loggedInUser != null}">
+                    <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+                    <span style="color: #1a1a1a;">|</span>
+                    <span class="user-welcome" th:text="${loggedInUser}">User</span>
+                    <a href="/logout">Logout</a>
+                </span>
+            <span th:if="${loggedInUser == null}">
+                    <a href="/login">Login</a>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <a href="/exhibitions" class="back-link">← Back to Exhibitions</a>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="detail-container">
+        <div class="detail-header">
+            <h1 th:text="${artwork.artworkTitle}">Artwork Title</h1>
+
+            <img th:src="@{/images/artworks/{img}(img=${artwork.imageUrl})}"
+                 th:alt="${artwork.artworkTitle}"
+                 class="artwork-image-large">
+
+            <p class="price" th:text="'$' + ${artwork.price}">Price</p>
+            <span class="badge badge-available" th:if="${artwork.availability == 'Available'}">✓ Available for Purchase</span>
+            <span class="badge badge-sold" th:if="${artwork.availability == 'Sold'}">✗ Sold</span>
+        </div>
+
+        <div class="detail-section">
+            <h3>Description</h3>
+            <p th:text="${artwork.description}">Description</p>
+        </div>
+
+        <div class="detail-section">
+            <h3>Artwork Information</h3>
+            <p><strong>Type:</strong> <span th:text="${artwork.artType}">Type</span></p>
+            <p th:if="${artwork.showcasedInExhibitions != null}"><strong>Showcased in:</strong> <span th:text="${artwork.showcasedInExhibitions}">Exhibitions</span></p>
+            <p th:if="${artwork.purchasedBy != null}"><strong>Purchased by:</strong> <span th:text="${artwork.purchasedBy}">Buyer</span></p>
+        </div>
+
+        <div class="detail-section">
+            <h3>About the Artist</h3>
+            <p><strong>Artist:</strong> <a th:href="@{/artist/{id}(id=${artwork.artistId})}" style="color: #c9a55a;" th:text="${artwork.artistName}">Artist Name</a></p>
+            <p><strong>Country:</strong> <span th:text="${artwork.artistCountry}">Country</span></p>
+            <p th:if="${artwork.artistPhones != null}"><strong>Contact:</strong> <span th:text="${artwork.artistPhones}">Phone</span></p>
+            <p><strong>Portfolio:</strong> <a th:href="${artwork.artistPortfolio}" th:text="${artwork.artistPortfolio}" target="_blank" style="color: #c9a55a;">Visit Portfolio</a></p>
+        </div>
+
+        <!-- Buy Button -->
+        <div th:if="${artwork.availability == 'Available'}" style="margin-top: 2rem;">
+            <form th:action="@{/artwork/{id}/add-to-cart(id=${artwork.artworkId})}" method="post">
+                <button type="submit" class="btn btn-success" style="font-size: 1.2rem; padding: 1rem 2rem;" th:disabled="${isInCart}">
+                    <span th:if="${!isInCart}">🛒 Add to Cart</span>
+                    <span th:if="${isInCart}">✓ Already in Cart</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="detail-section">
+            <h3>⭐ Reviews (<span th:text="${reviews.size()}">0</span>)</h3>
+
+            <div th:if="${!reviews.isEmpty()}">
+                <div class="review-card" th:each="review : ${reviews}">
+                    <div class="stars" th:text="${review.stars}">★★★★★</div>
+                    <p><strong th:text="${review.reviewerName}">Reviewer</strong></p>
+                    <p th:text="${review.feedback}">Review text</p>
+                </div>
+            </div>
+
+            <div th:if="${reviews.isEmpty()}" class="info-box">
+                <p>No reviews yet. Be the first to review this artwork!</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

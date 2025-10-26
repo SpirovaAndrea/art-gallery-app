@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${exhibition.exhibitionTitle} + ' - Art Gallery'">Exhibition Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand">ART GALLERY</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <span th:if="${loggedInUser != null}">
+                    <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+                    <span style="color: #1a1a1a;">|</span>
+                    <span class="user-welcome" th:text="${loggedInUser}">User</span>
+                    <a href="/logout">Logout</a>
+                </span>
+            <span th:if="${loggedInUser == null}">
+                    <a href="/login">Login</a>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <a href="/exhibitions" class="back-link">← Back to Exhibitions</a>
+
+    <div class="detail-container">
+        <div class="detail-header">
+            <h1 th:text="${exhibition.exhibitionTitle}">Exhibition Title</h1>
+            <p><strong>Duration:</strong>
+                <span th:text="${#temporals.format(exhibition.startDate, 'MMMM dd, yyyy HH:mm')}"></span> -
+                <span th:text="${#temporals.format(exhibition.endDate, 'MMMM dd, yyyy HH:mm')}"></span>
+            </p>
+            <p><strong>Contact:</strong> <span th:text="${exhibition.adminEmail}">Email</span></p>
+        </div>
+
+        <div class="detail-section">
+            <h3>Exhibition Statistics</h3>
+            <p><strong>Total Artworks:</strong> <span th:text="${exhibition.totalArtworks}">0</span></p>
+            <p><strong>Participating Artists:</strong> <span th:text="${exhibition.participatingArtists}">0</span></p>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Note:</strong> This exhibition showcases a curated selection of contemporary artworks. Click on any artwork below to view detailed information and reviews.</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <h2 class="page-title">Artworks in This Exhibition</h2>
+
+        <div class="grid">
+            <div class="card" th:each="artwork : ${artworks}">
+                <!-- Artwork Image -->
+                <img th:src="@{/images/artworks/{img}(img=${artwork.imageUrl})}"
+                     th:alt="${artwork.artworkTitle}"
+                     class="card-image">
+                <div class="card-content">
+                    <h3 th:text="${artwork.artworkTitle}">Artwork Title</h3>
+                    <p><strong>Artist:</strong> <span th:text="${artwork.artistName}">Artist</span></p>
+                    <p><strong>Type:</strong> <span th:text="${artwork.artType}">Type</span></p>
+                    <p th:text="${artwork.description}">Description</p>
+                    <p class="price" th:text="'$' + ${artwork.price}">Price</p>
+                    <span class="badge badge-available" th:if="${artwork.availability == 'Available'}">Available</span>
+                    <span class="badge badge-sold" th:if="${artwork.availability == 'Sold'}">Sold</span>
+                    <br><br>
+                    <a th:href="@{/artwork/{id}(id=${artwork.artworkId})}" class="btn">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${artworks.isEmpty()}" class="info-box">
+            <p>No artworks are currently showcased in this exhibition.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

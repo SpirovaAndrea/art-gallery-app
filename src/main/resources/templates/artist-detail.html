@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${artist.artistName} + ' - Art Gallery'">Artist Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand">ART GALLERY</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <span th:if="${loggedInUser != null}">
+                    <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+                    <span style="color: #1a1a1a;">|</span>
+                    <span class="user-welcome" th:text="${loggedInUser}">User</span>
+                    <a href="/logout">Logout</a>
+                </span>
+            <span th:if="${loggedInUser == null}">
+                    <a href="/login">Login</a>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <a href="/artists" class="back-link">← Back to Artists</a>
+
+    <div class="detail-container">
+        <div class="detail-header">
+            <h1 th:text="${artist.artistName}">Artist Name</h1>
+            <p><strong>🌍 Country of Origin:</strong> <span th:text="${artist.country}">Country</span></p>
+            <p th:if="${artist.phoneNumbers != null}"><strong>📞 Contact:</strong> <span th:text="${artist.phoneNumbers}">Phone</span></p>
+            <p><strong>🔗 Portfolio:</strong> <a th:href="${artist.portfolioLink}" th:text="${artist.portfolioLink}" target="_blank" style="color: #c9a55a;">Visit Website</a></p>
+        </div>
+
+        <div class="detail-section">
+            <h3>Artist Statistics</h3>
+            <p><strong>Total Artworks:</strong> <span th:text="${artist.totalArtworks}">0</span></p>
+            <p><strong>Exhibitions Participated:</strong> <span th:text="${artist.exhibitionsParticipated}">0</span></p>
+        </div>
+
+        <div class="detail-section">
+            <h3>Artworks by <span th:text="${artist.artistName}">Artist</span></h3>
+
+            <div class="grid">
+                <div class="card" th:each="artwork : ${artworks}">
+                    <!-- Artwork Image -->
+                    <img th:src="@{/images/artworks/{img}(img=${artwork.imageUrl})}"
+                         th:alt="${artwork.artworkTitle}"
+                         class="card-image">
+                    <div class="card-content">
+                        <h3 th:text="${artwork.artworkTitle}">Artwork Title</h3>
+                        <p><strong>Type:</strong> <span th:text="${artwork.artType}">Type</span></p>
+                        <p th:text="${artwork.description}">Description</p>
+                        <p class="price" th:text="'$' + ${artwork.price}">Price</p>
+                        <span class="badge badge-available" th:if="${artwork.availability == 'Available'}">Available</span>
+                        <span class="badge badge-sold" th:if="${artwork.availability == 'Sold'}">Sold</span>
+                        <br><br>
+                        <a th:href="@{/artwork/{id}(id=${artwork.artworkId})}" class="btn">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${artworks.isEmpty()}" class="info-box">
+                <p>This artist hasn't created any artworks yet.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

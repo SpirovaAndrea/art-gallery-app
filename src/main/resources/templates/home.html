@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery - Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-brand">ART GALLERY</a>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/exhibitions">Exhibitions</a>
+            <a href="/artists">Artists</a>
+            <span th:if="${loggedInUser != null}">
+                    <a href="/cart">My Cart <span class="cart-badge" th:text="${cartSize}">0</span></a>
+                    <span style="color: #ecf0f1;">|</span>
+                    <span style="color: #f39c12;" th:text="${loggedInUser}">User</span>
+                    <a href="/logout">Logout</a>
+                </span>
+            <span th:if="${loggedInUser == null}">
+                    <a href="/login">Login</a>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="hero">
+        <h1>Welcome to Our Virtual Art Gallery</h1>
+        <p>Discover extraordinary artworks from talented artists around the world</p>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="detail-container">
+        <h2>About Our Gallery</h2>
+        <p>Welcome to our curated collection of contemporary art. We showcase works from established and emerging artists, featuring paintings, installations, and street art. Each piece tells a unique story and reflects the diverse creative expressions of our time.</p>
+
+        <div style="margin-top: 2rem;">
+            <h3>Explore Our Collection</h3>
+            <div class="grid">
+                <div class="card">
+                    <h3>Exhibitions</h3>
+                    <p>Browse our current and past exhibitions featuring carefully curated artworks</p>
+                    <a href="/exhibitions" class="btn">View Exhibitions</a>
+                </div>
+                <div class="card">
+                    <h3>Artists</h3>
+                    <p>Meet the talented artists behind our collection and explore their portfolios</p>
+                    <a href="/artists" class="btn">View Artists</a>
+                </div>
+                <div class="card" th:if="${loggedInUser != null}">
+                    <h3>🛒 Your Cart</h3>
+                    <p>Review your selected artworks and complete your purchase</p>
+                    <a href="/cart" class="btn btn-success">View Cart</a>
+                </div>
+                <div class="card" th:if="${loggedInUser == null}">
+                    <h3>Member Area</h3>
+                    <p>Log in to add artworks to your cart and make purchases</p>
+                    <a href="/login" class="btn btn-warning">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
